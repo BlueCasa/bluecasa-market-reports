@@ -12,73 +12,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Write update script
-        run: |
-          cat > run.mjs << 'ENDOFSCRIPT'
-          import fs from 'fs';
-          import https from 'https';
-          const KEY = process.env.ANTHROPIC_API_KEY;
-          const MARKETS = ['Maryland','Washington DC','Virginia','Pennsylvania','Georgia','New Jersey','West Virginia'];
-          const now = new Date();
-          const updateLabel = now.toLocaleString('default',{month:'long'}) + ' ' + now.getFullYear();
-          console.log('Updating for:', updateLabel);
-          function callClaude(prompt) {
-            return new Promise((resolve, reject) => {
-              const payload = JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,messages:[{role:'user',content:prompt}]});
-              const options = {hostname:'api.anthropic.com',path:'/v1/messages',method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01','Content-Length':Buffer.byteLength(payload)}};
-              const req = https.request(options, (res) => {
-                let data = '';
-                res.on('data', chunk => data += chunk);
-                res.on('end', () => {
-                  try { resolve(JSON.parse(data)); } catch(e) { reject(e); }
-                });
-              });
-              req.on('error', reject);
-              req.write(payload);
-              req.end();
-            });
-          }
-          async function main() {
-            let html = fs.readFileSync('market-reports.html', 'utf8');
-            for (const market of MARKETS) {
-              console.log('Researching', market);
-              try {
-                const prompt = 'Research current housing market for ' + market + ' as of ' + updateLabel + '. Return ONLY JSON: {"medianPrice":"$428K","updatedMonth":"' + updateLabel + '"}';
-                const resp = await callClaude(prompt);
-                const text = resp.content && resp.content.find(b => b.type === 'text');
-                if (!text) throw new Error('No text');
-                const clean = text.text.replace(/```json|```/g,'').trim();
-                const data = JSON.parse(clean.substring(clean.indexOf('{'), clean.lastIndexOf('}')+1));
-                html = html.replace(/Updated <strong>[^<]+<\/strong>/g, 'Updated <strong>' + data.updatedMonth + '</strong>');
-                console.log('Done:', market);
-              } catch(e) { console.warn('Skipped', market, e.message); }
-              await new Promise(r => setTimeout(r, 1000));
-            }
-            fs.writeFileSync('market-reports.html', html);
-            console.log('Complete!');
-          }
-          main().catch(e => { console.error(e); process.exit(1); });
-          ENDOFSCRIPT
-
-      - name: Run update script
+      - name: Update and deploy
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node run.mjs
-
-      - name: Commit changes
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
+          python3 - <<'PYEOF'
+          import urllib.request, urllib.error, json, re, os, datetime
+          key = os.environ['ANTHROPIC_API_KEY']
+          now = datetime.datetime.now()
+          label = now.strftime('%B %Y')
+          print('Updating for:', label)
+          html = open('market-reports.html').read()
+          html = re.sub(r'Updated <strong>[^<]+</strong>', f'Updated <strong>{label}</strong>', html)
+          open('market-reports.html', 'w').write(html)
+          print('Done!')
+          PYEOF
           git config --global user.name "Blue Casa Auto-Update"
           git config --global user.email "info@blue-casa.com"
           git add market-reports.html
           git diff --staged --quiet || git commit -m "Auto-update market reports - $(date +'%B %Y')"
           git push
-
-      - name: Deploy to Netlify
-        run: |
           npm install -g netlify-cli
-          netlify deploy --prod --dir=. --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
+          netlify deploy --prod --dir=. --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID
