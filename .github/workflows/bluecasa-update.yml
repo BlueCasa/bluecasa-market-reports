@@ -1,0 +1,37 @@
+name: Blue Casa Market Update
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+jobs:
+  bluecasa-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update date
+        run: |
+          python3 -c "
+          import re, datetime
+          label = datetime.datetime.now().strftime('%B %Y')
+          html = open('market-reports.html').read()
+          html = re.sub(r'Updated <strong>[^<]+</strong>', 'Updated <strong>' + label + '</strong>', html)
+          open('market-reports.html', 'w').write(html)
+          print('Updated to:', label)
+          "
+
+      - name: Commit
+        run: |
+          git config --global user.name "Blue Casa Auto-Update"
+          git config --global user.email "info@blue-casa.com"
+          git add market-reports.html
+          git diff --staged --quiet || git commit -m "Auto-update - $(date +'%B %Y')"
+          git push
+
+      - name: Deploy
+        run: |
+          npm install -g netlify-cli
+          netlify deploy --prod --dir=. --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
