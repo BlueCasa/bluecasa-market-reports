@@ -1,4 +1,4 @@
-name: Monthly Market Report Update
+name: Blue Casa Market Update
 
 on:
   schedule:
