@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blue Casa® Market Reports | MD, DC, VA, PA, GA, NJ, WV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#f0f2f6;color:#1a1a1a}
+    .hero{display:grid;grid-template-columns:1fr 1fr;min-height:380px;background:#0a1e3d}
+    .hero-left{padding:3.5rem 3rem;display:flex;flex-direction:column;justify-content:center}
+    .hero-right{position:relative;overflow:hidden}
+    .hero-right img{width:100%;height:100%;object-fit:cover;opacity:0.6;display:block}
+    .hero-right-overlay{position:absolute;inset:0;background:linear-gradient(to right,#0a1e3d 0%,transparent 50%)}
+    .hero-accent{width:36px;height:2px;background:#c8a84b;margin-bottom:1.5rem}
+    .hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.18em;color:#c8a84b;text-transform:uppercase;margin-bottom:1.1rem}
+    .hero-title{font-family:'Inter',sans-serif;font-size:38px;font-weight:300;color:#fff;line-height:1.25;margin-bottom:1.1rem;letter-spacing:-0.01em}
+    .hero-title strong{font-weight:700;display:block}
+    .hero-sub{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.75;max-width:400px;margin-bottom:2rem;font-weight:400}
+    .hero-markets{display:flex;flex-wrap:wrap;gap:6px}
+    .hero-market-pill{padding:4px 12px;border:1px solid rgba(255,255,255,0.2);font-size:11px;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:0.05em;background:transparent}
+    .hero-market-pill.active-pill{background:#c8a84b;border-color:#c8a84b;color:#0a1e3d;font-weight:700}
+    .hero-updated{font-size:10px;font-weight:600;letter-spacing:0.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:1.75rem}
+    .hero-updated strong{color:rgba(255,255,255,0.5);font-weight:500}
+    @media(max-width:768px){.hero{grid-template-columns:1fr}.hero-right{display:none}.hero-left{padding:2.5rem 1.5rem}}
+    .tabs-bar{background:#0e2a52;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tabs-inner{display:flex;max-width:1100px;margin:0 auto;padding:0 2rem}
+    .mr-tab{padding:16px 22px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:rgba(255,255,255,0.5);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;text-transform:uppercase}
+    .mr-tab:hover{color:rgba(255,255,255,0.85)}
+    .mr-tab.active{color:#c8a84b;border-bottom-color:#c8a84b}
+    .mr-content{max-width:1100px;margin:0 auto;padding:2.25rem 2rem 3rem}
+    .mr-market{display:none}
+    .mr-market.active{display:block}
+    .mr-market-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
+    .mr-market-title{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;color:#0e2a52}
+    .mr-market-sub{font-size:13px;color:#6b7a8d;margin-top:4px;line-height:1.5}
+    .mr-condition{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
+    .mr-condition-dot{width:7px;height:7px;border-radius:50%}
+    .seller{background:#dcfce7;color:#15803d}
+    .seller .mr-condition-dot{background:#16a34a}
+    .balanced{background:#fef9c3;color:#854d0e}
+    .balanced .mr-condition-dot{background:#ca8a04}
+    .buyer{background:#dbeafe;color:#1e40af}
+    .buyer .mr-condition-dot{background:#2563eb}
+    .mr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+    .mr-stat{background:#fff;border-radius:12px;border:1px solid #e0e6ef;padding:1.25rem 1rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .mr-stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#8a96a3;margin-bottom:10px}
+    .mr-stat-value{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;color:#0e2a52;line-height:1;margin-bottom:5px}
+    .mr-stat-change{font-size:12px;font-weight:600}
+    .up{color:#16a34a}.down{color:#dc2626}.flat{color:#ca8a04}
+    .mr-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .mr-card{background:#fff;border-radius:12px;border:1px solid #e0e6ef;padding:1.5rem;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .mr-card-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#0e2a52;margin-bottom:1.1rem;display:flex;align-items:center;gap:8px}
+    .mr-card-title::before{content:'';display:inline-block;width:3px;height:14px;background:#c8a84b;border-radius:2px}
+    .mr-trend{margin-bottom:12px}
+    .mr-trend-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+    .mr-trend-label span:first-child{color:#4a5568}
+    .mr-trend-label span:last-child{font-weight:700;color:#0e2a52}
+    .mr-trend-bar{height:5px;background:#e8edf5;border-radius:3px;overflow:hidden}
+    .mr-trend-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#1a4c8b,#c8a84b)}
+    .mr-insight{display:flex;gap:10px;margin-bottom:11px;font-size:13px;line-height:1.6;color:#4a5568}
+    .mr-insight-dot{width:5px;height:5px;border-radius:50%;background:#c8a84b;margin-top:7px;flex-shrink:0}
+    .mr-forecast{position:relative;background:#0e2a52;border-radius:12px;padding:1.75rem 2rem;margin-bottom:14px;overflow:hidden}
+    .mr-forecast::before{content:'2026';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',Georgia,serif;font-size:80px;font-weight:800;color:rgba(255,255,255,0.04);line-height:1;pointer-events:none}
+    .mr-forecast-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#c8a84b;margin-bottom:0.6rem}
+    .mr-forecast-text{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.82);max-width:640px}
+    .mr-cta{background:#fff;border-radius:12px;border:1px solid #e0e6ef;padding:2rem;text-align:center;margin-top:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .mr-cta-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#0e2a52;margin-bottom:8px}
+    .mr-cta-sub{font-size:14px;color:#6b7a8d;margin-bottom:1.5rem;line-height:1.5}
+    .mr-cta-btn{display:inline-block;padding:13px 30px;background:#1a4c8b;color:#fff;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;transition:background 0.2s;margin:0 6px 8px;letter-spacing:0.02em}
+    .mr-cta-btn:hover{background:#0e2a52}
+    .mr-cta-btn.gold{background:#c8a84b;color:#1a1a1a}
+    .mr-cta-btn.gold:hover{background:#b8953a}
+    .mr-footer{text-align:center;padding:1.5rem 2rem 2.5rem;font-size:11px;color:#a0acba;line-height:1.8;border-top:1px solid #e0e6ef;background:#fff}
+    @media(max-width:768px){.hero-title{font-size:34px}.hero-content{padding:2rem 1.5rem 2.25rem}.hero-updated{top:1.5rem;right:1.5rem}.mr-stats{grid-template-columns:1fr 1fr}.mr-two-col{grid-template-columns:1fr}.tabs-inner{padding:0 0.5rem}.mr-content{padding:1.5rem 1rem 2rem}.mr-stat-value{font-size:24px}.mr-forecast::before{display:none}}
+    @media(max-width:480px){.hero-title{font-size:28px}.mr-market-title{font-size:22px}}
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-accent"></div>
+    <div class="hero-eyebrow">Blue Casa® &nbsp;·&nbsp; Real Estate Intelligence</div>
+    <div class="hero-title">
+      Local Market
+      <strong>Reports &amp; Insights</strong>
+    </div>
+    <div class="hero-sub">Current housing market data, price trends, days on market, and 2026 outlooks for every market we serve — powered by BrightMLS and regional REALTOR® associations.</div>
+    <div class="hero-markets">
+      <div class="hero-market-pill active-pill">Maryland</div>
+      <div class="hero-market-pill">Washington DC</div>
+      <div class="hero-market-pill">Virginia</div>
+      <div class="hero-market-pill">Pennsylvania</div>
+      <div class="hero-market-pill">Georgia</div>
+      <div class="hero-market-pill">New Jersey</div>
+      <div class="hero-market-pill">West Virginia</div>
+    </div>
+    <div class="hero-updated">Updated <strong>April 2026</strong></div>
+  </div>
+  <div class="hero-right">
+    <img src="https://static.wixstatic.com/media/8a7b13_aa6d01da1adf4296a9ff73432a84de18~mv2.jpeg" alt="City skyline" />
+    <div class="hero-right-overlay"></div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <div class="mr-tab active" onclick="switchMarket('md',this)">Maryland</div>
+    <div class="mr-tab" onclick="switchMarket('dc',this)">Washington DC</div>
+    <div class="mr-tab" onclick="switchMarket('va',this)">Virginia</div>
+    <div class="mr-tab" onclick="switchMarket('pa',this)">Pennsylvania</div>
+    <div class="mr-tab" onclick="switchMarket('ga',this)">Georgia</div>
+    <div class="mr-tab" onclick="switchMarket('nj',this)">New Jersey</div>
+    <div class="mr-tab" onclick="switchMarket('wv',this)">West Virginia</div>
+  </div>
+</div>
+
+<div class="mr-content">
+
+  <!-- MARYLAND -->
+  <div class="mr-market active" id="market-md">
+    <div class="mr-market-header"><div><div class="mr-market-title">Maryland Housing Market</div><div class="mr-market-sub">Baltimore metro · Towson · Annapolis · Montgomery County · Howard County · Anne Arundel</div></div><div class="mr-condition seller"><div class="mr-condition-dot"></div>Seller's Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$428K</div><div class="mr-stat-change up">▲ 3.2% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">44</div><div class="mr-stat-change down">▲ 10 days YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$220</div><div class="mr-stat-change up">▲ 2.8% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">2.2</div><div class="mr-stat-change flat">Seller-Favoring</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Home Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Montgomery County</span><span>$617,500</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:95%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Howard County</span><span>$565,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:87%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Anne Arundel County</span><span>$520,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:80%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Baltimore County</span><span>$363,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:56%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Baltimore City</span><span>$220,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:34%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Inventory rose 20%+ year-over-year, giving buyers more choices while still favoring sellers overall.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>36.7% of homes sold above list price — competitive but down from pandemic-era peaks.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Harford County homes sell in just 17 days on average — one of the fastest submarkets in the state.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Baltimore City remains the most affordable entry point in the region with strong investment upside near major hospitals and universities.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">Maryland's housing market is expected to remain stable with modest appreciation of 2–4% through 2026. Inventory is gradually improving — up 20%+ year-over-year — but still sits below 3 months of supply, which continues to favor sellers. Strong employment in healthcare, federal government, and education sectors is sustaining demand across the Baltimore and DC suburbs. Spring 2026 is expected to see renewed buyer activity as mortgage rates ease toward the mid-6% range.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> Spring (March–May) is peak season. Well-priced homes in suburban counties still attract multiple offers and sell quickly.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> August–December offers slightly more negotiating room. First-time buyers should explore Maryland's SmartBuy and MMP mortgage assistance programs.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Baltimore City offers one of the most affordable entry points on the East Coast with strong university and hospital-driven rental demand.</div></div>
+    </div>
+  </div>
+
+  <!-- DC -->
+  <div class="mr-market" id="market-dc">
+    <div class="mr-market-header"><div><div class="mr-market-title">Washington DC Housing Market</div><div class="mr-market-sub">District of Columbia · Capitol Hill · Georgetown · Brookland · Anacostia · DMV metro area</div></div><div class="mr-condition buyer"><div class="mr-condition-dot"></div>Shifting to Buyer's Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$617K</div><div class="mr-stat-change down">▼ 1% projected '26</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">64</div><div class="mr-stat-change down">▲ 9 days YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$487</div><div class="mr-stat-change down">▼ 3.2% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Active Listings</div><div class="mr-stat-value">+33%</div><div class="mr-stat-change flat">YoY Increase</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Type &amp; Neighborhood</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Georgetown</span><span>$1,840,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:98%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Detached Homes</span><span>$1,300,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:85%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Rowhouse / Townhouse</span><span>$620,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:52%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Condo / Co-op</span><span>$400,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:34%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Anacostia</span><span>$485,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:40%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>DC is the only Mid-Atlantic market projected to see a slight price dip in 2026 — driven by federal workforce changes and budget uncertainty.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Active listings are up 33%+ year-over-year — buyers have more choices than any time since 2019.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>34% of homes still sell above list price — well-located, move-in ready properties remain highly competitive.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>DC home values remain 69% above the national median — the long-term fundamentals are very strong.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">The DC metro is transitioning to a more balanced market. Bright MLS projects a modest 1% price decline in 2026 — the only Mid-Atlantic market expected to soften — due to federal workforce uncertainty from ongoing government restructuring. However, sales volume is expected to jump 8–10% as sidelined buyers return. For sellers, strategic pricing and early-spring listings will be critical. For buyers, this is one of the best entry windows in years.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> List in late winter or early spring (Feb–April) before inventory peaks. Price competitively — overpriced homes now sit for months.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> 2026 is one of the best DC buyer opportunities in years. More inventory, longer days on market, and motivated sellers willing to negotiate.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Condo entry points near Navy Yard and east of the Anacostia offer the best affordability-to-transit ratio in the city right now.</div></div>
+    </div>
+  </div>
+
+  <!-- VIRGINIA -->
+  <div class="mr-market" id="market-va">
+    <div class="mr-market-header"><div><div class="mr-market-title">Virginia Housing Market</div><div class="mr-market-sub">Northern Virginia · Arlington · Alexandria · McLean · Reston · Fairfax County · Prince William</div></div><div class="mr-condition seller"><div class="mr-condition-dot"></div>Seller's Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$486K</div><div class="mr-stat-change up">▲ 4.1% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">22</div><div class="mr-stat-change up">Fast-Moving</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$280</div><div class="mr-stat-change up">▲ 3.5% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">1.8</div><div class="mr-stat-change flat">Very Low</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>McLean</span><span>$1,350,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:98%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Arlington</span><span>$780,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:72%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Alexandria</span><span>$680,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:63%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Reston / Herndon</span><span>$560,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:52%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Prince William County</span><span>$420,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:39%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Northern Virginia remains one of the most competitive real estate markets in the country with homes moving in under 25 days on average.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>The tech and government contractor sector continues to drive strong, consistent housing demand across NoVA.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Amazon HQ2 in Arlington continues to fuel demand and appreciation in the surrounding area.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Bright MLS projects a 2.8% price increase for Virginia suburbs in 2026, outpacing the DC core market.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">Virginia's Northern suburbs are expected to outperform the broader DC metro in 2026. Low inventory, Amazon HQ2 demand spillover, and a strong tech and government employment base continue to support prices. Prince William and Loudoun counties offer the best value for buyers priced out of Arlington and Fairfax. Mid-Atlantic Virginia markets are projected to see 2.5–3.5% appreciation through 2026.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> Inventory is tight — well-priced homes in NoVA frequently attract multiple offers within days of listing.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> Come pre-approved and be ready to move quickly. Escalation clauses are common in competitive Arlington and Fairfax markets.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Proximity to Metro stations in Arlington and Fairfax delivers premium rental rates and consistently low vacancy.</div></div>
+    </div>
+  </div>
+
+  <!-- PENNSYLVANIA -->
+  <div class="mr-market" id="market-pa">
+    <div class="mr-market-header"><div><div class="mr-market-title">Pennsylvania Housing Market</div><div class="mr-market-sub">Philadelphia · Main Line · Montgomery County · Bucks County · Chester County · Delaware County</div></div><div class="mr-condition balanced"><div class="mr-condition-dot"></div>Balanced Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$265K</div><div class="mr-stat-change up">▲ 6.0% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">70</div><div class="mr-stat-change down">▲ 2 days YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$209</div><div class="mr-stat-change up">▲ 4.5% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">4.5</div><div class="mr-stat-change flat">Balanced</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Center City Philadelphia</span><span>$495,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:90%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Montgomery County</span><span>$420,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:76%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Bucks County</span><span>$380,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:69%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Delaware County</span><span>$310,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:56%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Philadelphia City</span><span>$265,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:48%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Philadelphia prices rose 6% year-over-year — one of the strongest appreciation rates among major East Coast cities.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Homes sell at 97.4% of asking price — a fair environment where well-priced properties still perform strongly.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Hot neighborhoods like Rittenhouse Square, Point Breeze, and Northern Liberties still see competitive bidding.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Philadelphia remains the most affordable major city between NYC and DC — a key draw for out-of-market buyers.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">Greater Philadelphia is positioned as one of the stronger Mid-Atlantic markets for 2026. Bright MLS projects a 2.8% price increase, outpacing both the national average and the DC metro. A spring 2026 market surge is expected as lower mortgage rates unlock pent-up buyer demand. The Main Line and inner-ring suburbs continue to attract NYC and DC transplants seeking relative affordability and quality of life.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> April–May is prime season. Turn-key homes in good school districts still attract serious competition and multiple offers.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> More leverage than in 2021–2023 — especially in the city and outer suburbs. Get pre-approved now for the spring market.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Fishtown, Brewerytown, and South Philadelphia offer strong rental yield with ongoing neighborhood revitalization.</div></div>
+    </div>
+  </div>
+
+  <!-- GEORGIA -->
+  <div class="mr-market" id="market-ga">
+    <div class="mr-market-header"><div><div class="mr-market-title">Georgia Housing Market</div><div class="mr-market-sub">Metro Atlanta · Buckhead · Alpharetta · Sandy Springs · Marietta · Cobb County · Gwinnett</div></div><div class="mr-condition balanced"><div class="mr-condition-dot"></div>Balanced Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$388K</div><div class="mr-stat-change up">▲ 2.0% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">56</div><div class="mr-stat-change down">▲ 10 days YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$293</div><div class="mr-stat-change up">▲ 1.0% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">3.9</div><div class="mr-stat-change flat">▲ from 3.2</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Buckhead</span><span>$750,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:90%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Alpharetta</span><span>$600,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:72%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Sandy Springs</span><span>$540,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:65%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Marietta / Cobb County</span><span>$420,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:50%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Atlanta City (median)</span><span>$388,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:47%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Georgia's market is moving toward balance — sellers received 95.4% of list price in 2025, with continued normalization ahead.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Inventory climbed 13% year-over-year, giving buyers more choices and reducing pandemic-era urgency.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>New construction is active with Columbus and Macon leading statewide appreciation at 10.3% and 5.6% respectively.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Georgia's landlord-friendly laws and tech/film sector growth make it a top Southeast investment destination.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">Georgia REALTORS® describe 2026 as "a year of stabilization and recovery." Home prices are forecast to appreciate 2–4%, supported by strong employment in tech, film, logistics, and healthcare. Atlanta continues to attract domestic migration from higher-cost coastal cities. The spring 2026 market is expected to see renewed buyer activity as mortgage rates ease toward 6%.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> February–July is peak season. Move-in ready homes in strong Atlanta neighborhoods still command competitive prices.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> 2026 offers more leverage than any year since 2019 — take advantage of increased inventory and motivated sellers.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Georgia's landlord-friendly laws and strong rental demand make it one of the top income-property states in the Southeast.</div></div>
+    </div>
+  </div>
+
+  <!-- NEW JERSEY -->
+  <div class="mr-market" id="market-nj">
+    <div class="mr-market-header"><div><div class="mr-market-title">New Jersey Housing Market</div><div class="mr-market-sub">Bergen County · Essex County · Hudson County · Morris County · South Jersey · Camden County</div></div><div class="mr-condition seller"><div class="mr-condition-dot"></div>Seller's Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$537K</div><div class="mr-stat-change up">▲ 7.2% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">29</div><div class="mr-stat-change up">Fast-Moving</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$310</div><div class="mr-stat-change up">▲ 5.8% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">1.6</div><div class="mr-stat-change flat">Very Low</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Bergen County</span><span>$760,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:90%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Hudson County</span><span>$680,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:80%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Morris County</span><span>$620,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:73%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Gloucester County</span><span>$350,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:42%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Camden County</span><span>$295,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:35%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>New Jersey posted one of the highest YoY appreciation rates in the northeast — up 7.2% driven by NYC overflow demand.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Inventory remains critically low at 1.6 months of supply — among the tightest in the entire Mid-Atlantic region.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>South Jersey is seeing double-digit price growth as Philadelphia buyers seek affordability across the bridge.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Bergen and Hudson county homes regularly receive multiple offers within days of hitting the market.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">New Jersey is expected to remain one of the strongest housing markets in the northeast through 2026. Continued demand spillover from NYC, critically low inventory, and strong commuter-corridor appeal are driving sustained price growth. South Jersey is emerging as a standout market as Philadelphia buyers seek affordability. Prices are projected to appreciate 4–6% in 2026, with the fastest growth in suburban markets within commuting distance of major employment hubs.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> Demand far exceeds supply — properly priced homes are selling fast and often above asking price across the state.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> Come pre-approved and ready to move quickly. Escalation clauses are common in Bergen and Essex county markets.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> South Jersey offers strong value relative to North Jersey, with growing demand from Philadelphia-area renters and buyers.</div></div>
+    </div>
+  </div>
+
+  <!-- WEST VIRGINIA -->
+  <div class="mr-market" id="market-wv">
+    <div class="mr-market-header"><div><div class="mr-market-title">West Virginia Housing Market</div><div class="mr-market-sub">Eastern Panhandle · Jefferson County · Berkeley County · Martinsburg · Charles Town · Morgantown</div></div><div class="mr-condition seller"><div class="mr-condition-dot"></div>Seller's Market</div></div>
+    <div class="mr-stats">
+      <div class="mr-stat"><div class="mr-stat-label">Median Sale Price</div><div class="mr-stat-value">$245K</div><div class="mr-stat-change up">▲ 5.8% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Days on Market</div><div class="mr-stat-value">38</div><div class="mr-stat-change flat">Steady</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Price per Sqft</div><div class="mr-stat-value">$148</div><div class="mr-stat-change up">▲ 4.2% YoY</div></div>
+      <div class="mr-stat"><div class="mr-stat-label">Months of Supply</div><div class="mr-stat-value">2.4</div><div class="mr-stat-change flat">Seller-Leaning</div></div>
+    </div>
+    <div class="mr-two-col">
+      <div class="mr-card"><div class="mr-card-title">Prices by Area</div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Jefferson County</span><span>$385,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:85%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Berkeley County</span><span>$310,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:68%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Martinsburg</span><span>$275,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:60%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Morgantown</span><span>$245,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:54%"></div></div></div>
+        <div class="mr-trend"><div class="mr-trend-label"><span>Charleston</span><span>$185,000</span></div><div class="mr-trend-bar"><div class="mr-trend-fill" style="width:41%"></div></div></div>
+      </div>
+      <div class="mr-card"><div class="mr-card-title">Key Market Indicators</div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>The Eastern Panhandle is WV's hottest market — fueled by DC and Maryland commuters seeking affordability and space.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>West Virginia offers some of the most affordable home prices on the entire East Coast, attracting remote workers and retirees.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>Martinsburg and Charles Town are growing rapidly as buyers seek alternatives to Maryland's higher price points.</div></div>
+        <div class="mr-insight"><div class="mr-insight-dot"></div><div>New construction is picking up in Berkeley County to meet rising demand from DC metro overflow buyers.</div></div>
+      </div>
+    </div>
+    <div class="mr-forecast"><div class="mr-forecast-label">2026 Market Outlook</div><div class="mr-forecast-text">West Virginia's Eastern Panhandle is one of the most compelling value markets on the East Coast for 2026. As remote work remains prevalent and DC and Maryland home prices stay elevated, buyers are increasingly looking to WV for space and affordability. Jefferson and Berkeley counties are expected to see 5–7% appreciation through 2026. The state also benefits from low property taxes, no state income tax on retirement income, and a growing quality-of-life reputation.</div></div>
+    <div class="mr-card"><div class="mr-card-title">Buying &amp; Selling Strategy</div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Sellers:</strong> The Eastern Panhandle is moving quickly — homes in Martinsburg and Charles Town are attracting DC metro buyers in large numbers.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Buyers:</strong> WV offers the best value per dollar of any market we serve — ideal for remote workers, retirees, and first-time buyers.</div></div>
+      <div class="mr-insight"><div class="mr-insight-dot"></div><div><strong>Investors:</strong> Low entry prices, rising rents, and strong commuter demand make the Eastern Panhandle a compelling long-term investment.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="mr-cta">
+    <div class="mr-cta-title">Ready to Make Your Move?</div>
+    <div class="mr-cta-sub">Connect with a Blue Casa® agent who specializes in your local market — or get an instant AI-powered home value estimate, free.</div>
+    <a href="https://bluecasa-ai-valuation.netlify.app/" class="mr-cta-btn gold">Get Free Home Value</a>
+    <a href="https://bluecasa-ai-valuation.netlify.app/contact.html" class="mr-cta-btn">Talk to an Agent</a>
+  </div>
+
+</div>
+
+<div class="mr-footer">
+  &copy; 2026 Blue Casa&reg; &nbsp;·&nbsp; 210 W. Pennsylvania Ave, Suite 100, Towson MD 21204 &nbsp;·&nbsp; 1-800-381-7203<br>
+  Licensed in Maryland, Washington DC, Virginia, Pennsylvania, Georgia, New Jersey &amp; West Virginia &nbsp;·&nbsp; Equal Housing Opportunity<br>
+  Market data sourced from Bright MLS, Redfin, Georgia REALTORS&reg;, Maryland REALTORS&reg;, and regional housing associations. All figures are approximate and subject to change. Not intended as financial or investment advice.
+</div>
+
+<script>
+function switchMarket(key,tab){
+  document.querySelectorAll('.mr-market').forEach(function(m){m.classList.remove('active')});
+  document.querySelectorAll('.mr-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.hero-market-pill').forEach(function(p){p.classList.remove('active-pill')});
+  document.getElementById('market-'+key).classList.add('active');
+  tab.classList.add('active');
+  var map={md:0,dc:1,va:2,pa:3,ga:4,nj:5,wv:6};
+  var pills=document.querySelectorAll('.hero-market-pill');
+  if(pills[map[key]])pills[map[key]].classList.add('active-pill');
+}
+</script>
+</body>
+</html>
